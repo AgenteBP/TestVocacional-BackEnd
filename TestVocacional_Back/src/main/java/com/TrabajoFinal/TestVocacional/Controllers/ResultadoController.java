@@ -2,6 +2,7 @@ package com.TrabajoFinal.TestVocacional.Controllers;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Calendar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import com.TrabajoFinal.TestVocacional.Services.ResultadoService;
 public class ResultadoController {
     private final int DEFAULT_PAGE_NUMBER = 0;
     private final int DEFAULT_QUANTITY_PER_PAGE = 10;
+    int anoActual = Calendar.getInstance().get(Calendar.YEAR);
     
     @Autowired
     private ResultadoService resultadoService;
@@ -115,10 +117,55 @@ public class ResultadoController {
         return resultados;
     }
 
-    @GetMapping("/resultados/viewGraph")
-    public List<Object[]> getCantForCarreras( @RequestParam(defaultValue = "true") boolean interes) {
-        return resultadoService.obtenerCantidadUsuariosPorCarreras(interes);
+    // Cartas
+    @GetMapping("/resultados/count")
+    public Long countResults() {
+        return resultadoService.countResults();
     }
+
+    @GetMapping("/resultados/countWithInterest")
+    public Long countResultsWithInterest() {
+        return resultadoService.countResultsWithInterest();
+    }
+
+    @GetMapping("/resultados/mostChosenCareer")
+    public List<Object[]> findCareerMostChosenWithInterest() {
+        return resultadoService.findCareerMostChosenWithInterest();
+    }
+
+    @GetMapping("/resultados/mostFrequentSchool")
+    public List<Object[]> findMostFrequentSchool() {
+        return resultadoService.findMostFrequentSchool();
+    }
+    @GetMapping("/resultados/mostFrequentSchoolCom")
+    public List<Object[]> findMostFrequentSchoolCom(@RequestParam List<String> escuelas) {
+        return resultadoService.findMostFrequentSchoolCom(escuelas);
+    }
+
+    // Graficos
+
+    @GetMapping("/resultados/viewGraph")
+    public List<Object[]> getCantForCarreras(@RequestParam Map<String, String> map) {
+
+
+        // Obtener parámetros adicionales para la búsqueda
+        boolean interes = Boolean.parseBoolean(map.getOrDefault("interes", "true"));
+        Integer edadMinima = map.containsKey("edadMinima") ? Integer.parseInt(map.get("edadMinima")) : 16;
+        Integer edadMaxima = map.containsKey("edadMaxima") ? Integer.parseInt(map.get("edadMaxima")) : 100;
+        Integer anoMinimo = map.containsKey("anoMinimo") ? Integer.parseInt(map.get("anoMinimo")) : 2023;
+        Integer anoMaximo = map.containsKey("anoMaximo") ? Integer.parseInt(map.get("anoMaximo")) : anoActual;
+        String escuelaParam = map.get("escuela");
+        // String escuela = "null".equals(escuelaParam) ? null : escuelaParam;
+        String escuela = "Todas las escuelas".equalsIgnoreCase(escuelaParam) || "null".equalsIgnoreCase(escuelaParam) ? null : escuelaParam;
+
+        // System.out.println("la edad minimaaaaaaaaaaaaaaaaaaa tiene "+ edadMinima);
+        // System.out.println("la edad maximaaaaaaaaaaaaaaaaaaa tiene "+ edadMaxima);
+        // System.out.println("la ano minimaaaaaaaaaaaaaaaaaaa tiene "+ anoMinimo);
+        // System.out.println("la ano maximaaaaaaaaaaaaaaaaaaa tiene "+ anoMaximo);
+        return resultadoService.obtenerCantidadUsuariosPorCarreras(interes, edadMinima, edadMaxima, anoMinimo, anoMaximo, escuela);
+    }
+
+
     
 
     // @GetMapping(value = "/resultados/viewAll")
@@ -157,17 +204,9 @@ public class ResultadoController {
         Integer edadHasta = map.containsKey("edadHasta") ? Integer.parseInt(map.get("edadHasta")) : 100;
 
         Page<Object[]> resultados;
-
-        // if(interes.equals("true")){
-        //     resultados = resultadoService.buscarResultadosConFiltro(opcion, valor, edadDesde, edadHasta, page, quantityPerPage);
-        // }
-        // else{
-        //     resultados = resultadoService.buscarResultadosConFiltroNoI(opcion, valor, edadDesde, edadHasta, page, quantityPerPage);
-        // }
         
         resultados = resultadoService.buscarResultadosConFiltro(opcion, valor, edadDesde, edadHasta, interes, page, quantityPerPage);
 
-        // return new ResponseEntity<>(resultados, HttpStatus.OK);
         return resultados;
     }
 
