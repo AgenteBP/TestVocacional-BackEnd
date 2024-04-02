@@ -33,8 +33,32 @@ public class ResultadoService {
         return resultadoRepository.getDataSchoolInSanLuis(opcion, valor, edadDesde, edadHasta, interes, PageRequest.of(page, quantityPerPage));
     }
 
-    public List<Object[]> obtenerCantidadUsuariosPorCarreras(Boolean interes) {
-        return resultadoRepository.obtenerCantidadUsuariosPorCarreras(interes);
+    // Cartas
+    
+    public Long countResults() {
+        return resultadoRepository.contarResultados();
+    }
+
+    public Long countResultsWithInterest() {
+        return resultadoRepository.contarResultadosConInteres();
+    }
+
+    public List<Object[]> findCareerMostChosenWithInterest() {
+        return resultadoRepository.encontrarCarreraMasElegidaConInteres();
+    }
+
+    public List<Object[]> findMostFrequentSchool() {
+        return resultadoRepository.encontrarEscuelaMasFrecuente();
+    }
+    public List<Object[]> findMostFrequentSchoolCom(List<String> escuelas) {
+        return resultadoRepository.encontrarEscuelasMasFrecuentesComparativo(escuelas);
+    }
+
+    // Graficos
+    public List<Object[]> obtenerCantidadUsuariosPorCarreras(Boolean interes,Integer edadMinima,Integer edadMaxima,Integer anoMinimo,Integer anoMaximo,String escuela) {
+        return resultadoRepository.obtenerCantidadUsuariosPorCarreras(
+            interes, edadMinima, edadMaxima, anoMinimo, anoMaximo, escuela
+        );
     }
 
     // public Page<Object[]> getAll(int page, int quantityPerPage) {

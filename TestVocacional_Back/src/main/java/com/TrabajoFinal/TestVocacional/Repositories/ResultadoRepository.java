@@ -39,26 +39,59 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
     "u.edad >= :edadDesde AND u.edad <= :edadHasta AND r.interes = :interes")
     Page<Object[]> getDataSchoolInSanLuis( @Param("opcion") String opcion, @Param("valor") String valor, @Param("edadDesde") Integer edadDesde, @Param("edadHasta") Integer edadHasta, @Param("interes") Boolean interes, Pageable pageable);
 
+    // Cartas
     // @Query(nativeQuery = true, value =
-    //         "SELECT carrera_obtenida AS tipoCarrera, COUNT(*) AS cantidad " +
-    //         "FROM resultados " +
-    //         "WHERE carrera_obtenida IN ('Ingeniería en Informática', 'Ingeniería en Computación', 'Licenciatura en Ciencia de la Computación', 'Profesorado en Ciencias de la Computación', 'Tecnicatura Web', 'Tecnicatura Universitaria en Redes de Computadoras') " +
-    //         "GROUP BY carrera_obtenida") 
-    // List<Object[]> obtenerCantidadUsuariosPorCarreras();
+    //     "SELECT COUNT(r) FROM Resultados r")
+    // Long contarResultados();
+    @Query("SELECT COUNT(r) FROM Resultados r")
+    Long contarResultados();
+
+    @Query(
+        "SELECT COUNT(r) FROM Resultados r WHERE r.interes = true")
+    Long contarResultadosConInteres();
+
+    @Query(
+        "SELECT r.carreraObtenida FROM Resultados r WHERE r.interes = true " +
+           "GROUP BY r.carreraObtenida " +
+           "ORDER BY COUNT(r) DESC")
+    List<Object[]> encontrarCarreraMasElegidaConInteres();
+
+    @Query(
+    "SELECT u.schoolInSanLuis, COUNT(*) AS cantidad FROM Resultados r " +
+    "JOIN Usuarios u ON r.idUsuario = u.id " + // Realizar un JOIN con la tabla Usuarios
+    "WHERE u.schoolInSanLuis IS NOT NULL " + // Filtrar valores no nulos
+    "GROUP BY u.schoolInSanLuis " +
+    "ORDER BY COUNT(*) DESC"
+    )
+    List<Object[]> encontrarEscuelaMasFrecuente();
+
+    @Query(
+    "SELECT u.schoolInSanLuis, COUNT(*) AS cantidad FROM Resultados r " +
+    "JOIN Usuarios u ON r.idUsuario = u.id " + // Realizar un JOIN con la tabla Usuarios
+    "WHERE u.schoolInSanLuis IS NOT NULL " + // Filtrar valores no nulos
+    "AND u.schoolInSanLuis IN :escuelas " + // Filtrar por escuelas específicas
+    "GROUP BY u.schoolInSanLuis " +
+    "ORDER BY COUNT(*) DESC"
+    )
+    List<Object[]> encontrarEscuelasMasFrecuentesComparativo(@Param("escuelas") List<String> escuelas);
+    
+    // Graficos
     @Query(nativeQuery = true, value =
-        "SELECT carrera_obtenida AS tipoCarrera, COUNT(*) AS cantidad " +
-        "FROM resultados " +
-        "WHERE interes = :interes AND carrera_obtenida IN ('Ingeniería en Informática', 'Ingeniería en Computación', 'Licenciatura en Ciencia de la Computación', 'Profesorado en Ciencias de la Computación', 'Tecnicatura Web', 'Tecnicatura Universitaria en Redes de Computadoras') " +
+        "SELECT carrera_obtenida AS tipoCarrera, COUNT(*) AS cantidad FROM Resultados r JOIN Usuarios u ON r.id_usuario = u.id " +
+        "WHERE (r.interes = :interes) " + 
+        "AND (u.edad >= :edadMinima AND u.edad <= :edadMaxima) " +
+        "AND (YEAR(r.fecha) >= :anoMinimo AND YEAR(r.fecha) <= :anoMaximo) " +
+        "AND (:escuela IS NULL OR (u.provincia = 'San Luis' AND u.school_in_san_luis = :escuela)) " +
+        "AND carrera_obtenida IN ('Ingeniería en Informática', 'Ingeniería en Computación', 'Licenciatura en Ciencia de la Computación', 'Profesorado en Ciencias de la Computación', 'Tecnicatura Web', 'Tecnicatura Universitaria en Redes de Computadoras') " +
         "GROUP BY carrera_obtenida")
-    List<Object[]> obtenerCantidadUsuariosPorCarreras(@Param("interes") Boolean interes);
-
-
-    // @Query(nativeQuery = true, value =
-    //     "SELECT carrera_obtenida AS tipoCarrera, COUNT(*) AS cantidad " +
-    //     "FROM resultados " +
-    //     "WHERE interes = false AND carrera_obtenida IN ('Ingeniería en Informática', 'Ingeniería en Computación', 'Licenciatura en Ciencia de la Computación', 'Profesorado en Ciencias de la Computación', 'Tecnicatura Web', 'Tecnicatura Universitaria en Redes de Computadoras') " +
-    //     "GROUP BY carrera_obtenida")
-    // List<Object[]> obtenerCantidadUsuariosPorCarrerasNoI();
+    List<Object[]> obtenerCantidadUsuariosPorCarreras(
+        @Param("interes") Boolean interes,
+        @Param("edadMinima") Integer edadMinima,
+        @Param("edadMaxima") Integer edadMaxima,
+        @Param("anoMinimo") Integer anoMinimo,
+        @Param("anoMaximo") Integer anoMaximo,
+        @Param("escuela") String escuela
+    );
 
     // @Query("SELECT u.email, u.edad, r.fecha, r.carreraObtenida FROM Resultados r JOIN r.usuarios u WHERE r.active = true " +
     // "AND (:opcion IS NULL OR " +
