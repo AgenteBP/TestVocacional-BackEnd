@@ -12,5 +12,6 @@ public class Email {
     private String destinatario;
     private String asunto;
     private String cuerpo;
+    private int typeofPDF;
     
 }

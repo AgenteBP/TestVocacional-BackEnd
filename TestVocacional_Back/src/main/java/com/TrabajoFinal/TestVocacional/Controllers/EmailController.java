@@ -25,16 +25,21 @@ public class EmailController {
     @Autowired
     private EmailService emailService;
     @PostMapping("/enviar")
-    public ResponseEntity<Email>  enviarCorreo(@RequestParam("destinatario") String destinatario,
+    public ResponseEntity<Email>  enviarCorreo(@RequestParam("destinatario") String destinatario,@RequestParam("typeofPDF") String tipoDePDF,
     @RequestParam("pdf") MultipartFile pdfAdjunto) throws MessagingException, IOException {
 
         // Construye el objeto Email con los datos recibidos
         Email email = new Email();
         email.setDestinatario(destinatario);
+        email.setTypeofPDF(Integer.parseInt(tipoDePDF));
 
 
         return ResponseEntity.ok(emailService.enviarCorreo(email, pdfAdjunto));
     }
+    // @PostMapping("/enviar")
+    // public ResponseEntity<Email> enviarCorreo(@RequestBody Email email, @RequestParam("pdf") MultipartFile pdfAdjunto) throws MessagingException, IOException {
+    //     return ResponseEntity.ok(emailService.enviarCorreo(email, pdfAdjunto));
+    // }
     // public ResponseEntity<Email>  enviarCorreo(@RequestBody Email email) {
 
     //     return ResponseEntity.ok(emailService.enviarCorreo(email));

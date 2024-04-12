@@ -35,9 +35,26 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
     @Query("SELECT u.email, u.edad, u.provincia, u.schoolInSanLuis, r.fecha, r.carreraObtenida FROM Resultados r JOIN r.usuarios u WHERE r.active = true AND u.provincia = 'San Luis' " +
     " AND (:opcion IS NULL OR " +
     "(:opcion = 'email' AND u.email LIKE %:valor%) OR " +
+    "(:opcion = 'schoolInSanLuis' AND u.schoolInSanLuis LIKE %:valor%) OR " +
     "(:opcion = 'carreraObtenida' AND r.carreraObtenida LIKE %:valor%)) AND " +
     "u.edad >= :edadDesde AND u.edad <= :edadHasta AND r.interes = :interes")
     Page<Object[]> getDataSchoolInSanLuis( @Param("opcion") String opcion, @Param("valor") String valor, @Param("edadDesde") Integer edadDesde, @Param("edadHasta") Integer edadHasta, @Param("interes") Boolean interes, Pageable pageable);
+
+    @Query(nativeQuery = true, value =
+        "SELECT u.email, u.edad, u.provincia, u.school_in_san_luis, r.fecha, r.carrera_obtenida FROM Resultados r JOIN Usuarios u WHERE r.active = true AND u.provincia = 'San Luis' AND r.interes = :interes " +
+        "AND (u.edad >= :edadMinima AND u.edad <= :edadMaxima) " +
+        "AND (YEAR(r.fecha) >= :anoMinimo AND YEAR(r.fecha) <= :anoMaximo) " +
+        // "AND (:escuela IS NULL OR (u.provincia = 'San Luis' AND u.school_in_san_luis = :escuela)) " +
+        "AND ((:escuela IS NULL AND u.provincia = 'San Luis') OR (u.school_in_san_luis = :escuela)) ")
+    Page<Object[]> getDataSchoolInSanLuisFilterP(@Param("interes") Boolean interes, 
+        @Param("edadMinima") Integer edadMinima,
+        @Param("edadMaxima") Integer edadMaxima,
+        @Param("anoMinimo") Integer anoMinimo,
+        @Param("anoMaximo") Integer anoMaximo,
+        @Param("escuela") String escuela,
+        Pageable pageable);
+
+    
 
     // Cartas
     // @Query(nativeQuery = true, value =
@@ -81,16 +98,52 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
         "WHERE (r.interes = :interes) " + 
         "AND (u.edad >= :edadMinima AND u.edad <= :edadMaxima) " +
         "AND (YEAR(r.fecha) >= :anoMinimo AND YEAR(r.fecha) <= :anoMaximo) " +
-        "AND (:escuela IS NULL OR (u.provincia = 'San Luis' AND u.school_in_san_luis = :escuela)) " +
+        // "AND (u.provincia IS NOT NULL AND u.pais_origen IS NOT NULL) " +
+        "AND carrera_obtenida IN ('Ingeniería en Informática', 'Ingeniería en Computación', 'Licenciatura en Ciencia de la Computación', 'Profesorado en Ciencias de la Computación', 'Tecnicatura Universitaria en Web', 'Tecnicatura Universitaria en Redes de Computadoras') " +
+        "GROUP BY carrera_obtenida")
+    List<Object[]> obtenerCantidadUsuariosPorCarrerasTotal(
+        @Param("interes") Boolean interes,
+        @Param("edadMinima") Integer edadMinima,
+        @Param("edadMaxima") Integer edadMaxima,
+        @Param("anoMinimo") Integer anoMinimo,
+        @Param("anoMaximo") Integer anoMaximo
+    );
+
+    @Query(nativeQuery = true, value =
+        "SELECT carrera_obtenida AS tipoCarrera, COUNT(*) AS cantidad FROM Resultados r JOIN Usuarios u ON r.id_usuario = u.id " +
+        "WHERE (r.interes = :interes) " + 
+        "AND (u.edad >= :edadMinima AND u.edad <= :edadMaxima) " +
+        "AND (YEAR(r.fecha) >= :anoMinimo AND YEAR(r.fecha) <= :anoMaximo) " +
+        // "AND (:escuela IS NULL OR (u.provincia = 'San Luis' AND u.school_in_san_luis = :escuela)) " +
+        "AND ((:escuela IS NULL AND u.provincia = 'San Luis') OR (u.school_in_san_luis = :escuela)) " +
         "AND carrera_obtenida IN ('Ingeniería en Informática', 'Ingeniería en Computación', 'Licenciatura en Ciencia de la Computación', 'Profesorado en Ciencias de la Computación', 'Tecnicatura Web', 'Tecnicatura Universitaria en Redes de Computadoras') " +
         "GROUP BY carrera_obtenida")
-    List<Object[]> obtenerCantidadUsuariosPorCarreras(
+    List<Object[]> obtenerCantidadUsuariosPorCarrerasSanLuis(
         @Param("interes") Boolean interes,
         @Param("edadMinima") Integer edadMinima,
         @Param("edadMaxima") Integer edadMaxima,
         @Param("anoMinimo") Integer anoMinimo,
         @Param("anoMaximo") Integer anoMaximo,
         @Param("escuela") String escuela
+    );
+
+    @Query(nativeQuery = true, value =
+        "SELECT carrera_obtenida AS tipoCarrera, COUNT(*) AS cantidad FROM Resultados r JOIN Usuarios u ON r.id_usuario = u.id " +
+        "WHERE (r.interes = :interes) " + 
+        "AND (u.edad >= :edadMinima AND u.edad <= :edadMaxima) " +
+        "AND (YEAR(r.fecha) >= :anoMinimo AND YEAR(r.fecha) <= :anoMaximo) " +
+        // "AND (:provincia IS NULL OR (u.pais_origen IS NULL AND u.provincia = :provincia)) " +
+        // "AND (:provincia IS NULL u.provincia IS NOT NULL OR (u.provincia = :provincia)) " +
+        "AND ((:provincia IS NULL AND u.provincia IS NOT NULL) OR (u.provincia = :provincia)) " +
+        "AND carrera_obtenida IN ('Ingeniería en Informática', 'Ingeniería en Computación', 'Licenciatura en Ciencia de la Computación', 'Profesorado en Ciencias de la Computación', 'Tecnicatura Web', 'Tecnicatura Universitaria en Redes de Computadoras') " +
+        "GROUP BY carrera_obtenida")
+    List<Object[]> obtenerCantidadUsuariosPorCarrerasProvincias(
+        @Param("interes") Boolean interes,
+        @Param("edadMinima") Integer edadMinima,
+        @Param("edadMaxima") Integer edadMaxima,
+        @Param("anoMinimo") Integer anoMinimo,
+        @Param("anoMaximo") Integer anoMaximo,
+        @Param("provincia") String provincia
     );
 
     // @Query("SELECT u.email, u.edad, r.fecha, r.carreraObtenida FROM Resultados r JOIN r.usuarios u WHERE r.active = true " +
