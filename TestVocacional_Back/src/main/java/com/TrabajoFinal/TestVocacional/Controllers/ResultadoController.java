@@ -2,6 +2,7 @@ package com.TrabajoFinal.TestVocacional.Controllers;
 
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 import java.util.Calendar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -117,6 +118,29 @@ public class ResultadoController {
         return resultados;
     }
 
+    @GetMapping("/resultados/schoolInSanLuisFP")
+    public Page<Object[]> getAllSchoolInSanLuisFilterP(@RequestParam Map<String, String> map) {
+
+        // Obtener parámetros de paginación
+        int page = map.containsKey("page") ? Integer.parseInt(map.get("page")) : DEFAULT_PAGE_NUMBER;
+        int quantityPerPage = map.containsKey("quantity") ? Integer.parseInt(map.get("quantity")) : DEFAULT_QUANTITY_PER_PAGE;
+
+        // Obtener parámetros adicionales para la búsqueda
+        boolean interes = Boolean.parseBoolean(map.getOrDefault("interes", "true"));
+        Integer edadMinima = map.containsKey("edadMinima") ? Integer.parseInt(map.get("edadMinima")) : 16;
+        Integer edadMaxima = map.containsKey("edadMaxima") ? Integer.parseInt(map.get("edadMaxima")) : 100;
+        Integer anoMinimo = map.containsKey("anoMinimo") ? Integer.parseInt(map.get("anoMinimo")) : 2023;
+        Integer anoMaximo = map.containsKey("anoMaximo") ? Integer.parseInt(map.get("anoMaximo")) : anoActual;
+        String escuelaParam = map.get("escuela");
+        // String escuela = "null".equals(escuelaParam) ? null : escuelaParam;
+        String escuela = "Todas las escuelas".equalsIgnoreCase(escuelaParam) || "null".equalsIgnoreCase(escuelaParam) ? null : escuelaParam;
+
+        Page<Object[]> resultados = resultadoService.getAllSchoolInSanLuisFilterP(interes, edadMinima, edadMaxima, anoMinimo, anoMaximo, escuela, page, quantityPerPage);
+
+        // return new ResponseEntity<>(resultados, HttpStatus.OK);
+        return resultados;
+    }
+
     // Cartas
     @GetMapping("/resultados/count")
     public Long countResults() {
@@ -157,12 +181,34 @@ public class ResultadoController {
         String escuelaParam = map.get("escuela");
         // String escuela = "null".equals(escuelaParam) ? null : escuelaParam;
         String escuela = "Todas las escuelas".equalsIgnoreCase(escuelaParam) || "null".equalsIgnoreCase(escuelaParam) ? null : escuelaParam;
+        String provinciaParam = map.get("provincia");
+        // String provincia = "null".equals(provinciaParam) ? null : provinciaParam;
+        String provincia = "Todas las provincias".equalsIgnoreCase(provinciaParam) || "null".equalsIgnoreCase(provinciaParam) ? null : provinciaParam;
+
+        Integer modo = Integer.parseInt(map.get("modo"));
+
+        List<Object[]> resultados = new ArrayList<>();
+
+        switch (modo) {
+            case 1:
+                resultados = resultadoService.obtenerCantidadUsuariosPorCarrerasTotal(interes, edadMinima, edadMaxima, anoMinimo, anoMaximo);
+                break;
+            case 2:
+                resultados = resultadoService.obtenerCantidadUsuariosPorCarrerasSanLuis(interes, edadMinima, edadMaxima, anoMinimo, anoMaximo, escuela);
+                break;
+            case 3:
+                resultados = resultadoService.obtenerCantidadUsuariosPorCarrerasPronvicia(interes, edadMinima, edadMaxima, anoMinimo, anoMaximo, provincia);
+                break;
+           
+        }
+
+
 
         // System.out.println("la edad minimaaaaaaaaaaaaaaaaaaa tiene "+ edadMinima);
         // System.out.println("la edad maximaaaaaaaaaaaaaaaaaaa tiene "+ edadMaxima);
         // System.out.println("la ano minimaaaaaaaaaaaaaaaaaaa tiene "+ anoMinimo);
         // System.out.println("la ano maximaaaaaaaaaaaaaaaaaaa tiene "+ anoMaximo);
-        return resultadoService.obtenerCantidadUsuariosPorCarreras(interes, edadMinima, edadMaxima, anoMinimo, anoMaximo, escuela);
+        return resultados;
     }
 
 

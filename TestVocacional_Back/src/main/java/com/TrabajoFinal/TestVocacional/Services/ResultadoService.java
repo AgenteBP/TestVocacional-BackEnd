@@ -33,6 +33,10 @@ public class ResultadoService {
         return resultadoRepository.getDataSchoolInSanLuis(opcion, valor, edadDesde, edadHasta, interes, PageRequest.of(page, quantityPerPage));
     }
 
+    public Page<Object[]> getAllSchoolInSanLuisFilterP(Boolean interes,Integer edadMinima,Integer edadMaxima,Integer anoMinimo,Integer anoMaximo,String escuela, int page, int quantityPerPage) {
+        return resultadoRepository.getDataSchoolInSanLuisFilterP(interes, edadMinima, edadMaxima, anoMinimo, anoMaximo, escuela, PageRequest.of(page, quantityPerPage));
+    }
+
     // Cartas
     
     public Long countResults() {
@@ -55,9 +59,21 @@ public class ResultadoService {
     }
 
     // Graficos
-    public List<Object[]> obtenerCantidadUsuariosPorCarreras(Boolean interes,Integer edadMinima,Integer edadMaxima,Integer anoMinimo,Integer anoMaximo,String escuela) {
-        return resultadoRepository.obtenerCantidadUsuariosPorCarreras(
+    public List<Object[]> obtenerCantidadUsuariosPorCarrerasTotal(Boolean interes,Integer edadMinima,Integer edadMaxima,Integer anoMinimo,Integer anoMaximo) {
+        return resultadoRepository.obtenerCantidadUsuariosPorCarrerasTotal(
+            interes, edadMinima, edadMaxima, anoMinimo, anoMaximo
+        );
+    }
+
+    public List<Object[]> obtenerCantidadUsuariosPorCarrerasSanLuis(Boolean interes,Integer edadMinima,Integer edadMaxima,Integer anoMinimo,Integer anoMaximo,String escuela) {
+        return resultadoRepository.obtenerCantidadUsuariosPorCarrerasSanLuis(
             interes, edadMinima, edadMaxima, anoMinimo, anoMaximo, escuela
+        );
+    }
+
+    public List<Object[]> obtenerCantidadUsuariosPorCarrerasPronvicia(Boolean interes,Integer edadMinima,Integer edadMaxima,Integer anoMinimo,Integer anoMaximo,String provincia) {
+        return resultadoRepository.obtenerCantidadUsuariosPorCarrerasProvincias(
+            interes, edadMinima, edadMaxima, anoMinimo, anoMaximo, provincia
         );
     }
 
