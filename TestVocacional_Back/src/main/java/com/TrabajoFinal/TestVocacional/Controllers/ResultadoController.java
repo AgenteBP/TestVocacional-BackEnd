@@ -16,9 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.TrabajoFinal.TestVocacional.Models.Resultados;
 import com.TrabajoFinal.TestVocacional.Services.ResultadoService;
+import com.TrabajoFinal.TestVocacional.Urls.UrlFront;
 
 @RestController
-@CrossOrigin(origins = "http://127.0.0.1:5500")
+@CrossOrigin(origins = {UrlFront.urlLocal, UrlFront.urlNetlify})
 public class ResultadoController {
     private final int DEFAULT_PAGE_NUMBER = 0;
     private final int DEFAULT_QUANTITY_PER_PAGE = 10;

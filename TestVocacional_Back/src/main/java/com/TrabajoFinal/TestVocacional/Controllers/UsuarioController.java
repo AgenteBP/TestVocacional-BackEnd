@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import com.TrabajoFinal.TestVocacional.Models.Usuarios;
 import com.TrabajoFinal.TestVocacional.Services.UsuarioService;
+import com.TrabajoFinal.TestVocacional.Urls.UrlFront;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@CrossOrigin(origins = "http://127.0.0.1:5500")
+@CrossOrigin(origins = {UrlFront.urlLocal, UrlFront.urlNetlify})
 public class UsuarioController {
     private final int DEFAULT_PAGE_NUMBER = 0;
     private final int DEFAULT_QUANTITY_PER_PAGE = 100;
