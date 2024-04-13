@@ -11,6 +11,7 @@ import com.TrabajoFinal.TestVocacional.Security.Jwt.TokenResponse;
 import com.TrabajoFinal.TestVocacional.Security.Request.LoginRequest;
 import com.TrabajoFinal.TestVocacional.Security.Request.RegisterRequest;
 import com.TrabajoFinal.TestVocacional.Services.AccountService;
+import com.TrabajoFinal.TestVocacional.Urls.UrlFront;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://127.0.0.1:5500")
+@CrossOrigin(origins = {UrlFront.urlLocal, UrlFront.urlNetlify})
 public class AccountController {
 
     @Autowired
