@@ -56,7 +56,7 @@ public class AccountController {
         return ResponseEntity.ok(accountService.login(request));
     }
 
-    @PostMapping(value = "register")
+    @PostMapping(value = "registerAD")
     public ResponseEntity<TokenResponse> register(@RequestBody RegisterRequest request)
     {
         return ResponseEntity.ok(accountService.insert(request));
