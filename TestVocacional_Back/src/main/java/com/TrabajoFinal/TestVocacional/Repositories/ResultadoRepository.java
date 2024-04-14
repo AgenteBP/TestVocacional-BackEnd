@@ -116,7 +116,7 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
         "AND (YEAR(r.fecha) >= :anoMinimo AND YEAR(r.fecha) <= :anoMaximo) " +
         // "AND (:escuela IS NULL OR (u.provincia = 'San Luis' AND u.school_in_san_luis = :escuela)) " +
         "AND ((:escuela IS NULL AND u.provincia = 'San Luis') OR (u.school_in_san_luis = :escuela)) " +
-        "AND carrera_obtenida IN ('Ingeniería en Informática', 'Ingeniería en Computación', 'Licenciatura en Ciencia de la Computación', 'Profesorado en Ciencias de la Computación', 'Tecnicatura Web', 'Tecnicatura Universitaria en Redes de Computadoras') " +
+        "AND carrera_obtenida IN ('Ingeniería en Informática', 'Ingeniería en Computación', 'Licenciatura en Ciencia de la Computación', 'Profesorado en Ciencias de la Computación', 'Tecnicatura Universitaria en Web', 'Tecnicatura Universitaria en Redes de Computadoras') " +
         "GROUP BY carrera_obtenida")
     List<Object[]> obtenerCantidadUsuariosPorCarrerasSanLuis(
         @Param("interes") Boolean interes,
@@ -135,7 +135,7 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
         // "AND (:provincia IS NULL OR (u.pais_origen IS NULL AND u.provincia = :provincia)) " +
         // "AND (:provincia IS NULL u.provincia IS NOT NULL OR (u.provincia = :provincia)) " +
         "AND ((:provincia IS NULL AND u.provincia IS NOT NULL) OR (u.provincia = :provincia)) " +
-        "AND carrera_obtenida IN ('Ingeniería en Informática', 'Ingeniería en Computación', 'Licenciatura en Ciencia de la Computación', 'Profesorado en Ciencias de la Computación', 'Tecnicatura Web', 'Tecnicatura Universitaria en Redes de Computadoras') " +
+        "AND carrera_obtenida IN ('Ingeniería en Informática', 'Ingeniería en Computación', 'Licenciatura en Ciencia de la Computación', 'Profesorado en Ciencias de la Computación', 'Tecnicatura Universitaria en Web', 'Tecnicatura Universitaria en Redes de Computadoras') " +
         "GROUP BY carrera_obtenida")
     List<Object[]> obtenerCantidadUsuariosPorCarrerasProvincias(
         @Param("interes") Boolean interes,
