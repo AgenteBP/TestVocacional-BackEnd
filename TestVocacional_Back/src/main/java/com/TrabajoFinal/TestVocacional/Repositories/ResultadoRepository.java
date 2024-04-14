@@ -94,7 +94,7 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
     
     // Graficos
     @Query(nativeQuery = true, value =
-        "SELECT carrera_obtenida AS tipoCarrera, COUNT(*) AS cantidad FROM Resultados r JOIN Usuarios u ON r.id_usuario = u.id " +
+        "SELECT carrera_obtenida AS tipoCarrera, COUNT(*) AS cantidad FROM resultados r JOIN usuarios u ON r.id_usuario = u.id " +
         "WHERE (r.interes = :interes) " + 
         "AND (u.edad >= :edadMinima AND u.edad <= :edadMaxima) " +
         "AND (YEAR(r.fecha) >= :anoMinimo AND YEAR(r.fecha) <= :anoMaximo) " +
