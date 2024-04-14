@@ -41,7 +41,7 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
     Page<Object[]> getDataSchoolInSanLuis( @Param("opcion") String opcion, @Param("valor") String valor, @Param("edadDesde") Integer edadDesde, @Param("edadHasta") Integer edadHasta, @Param("interes") Boolean interes, Pageable pageable);
 
     @Query(nativeQuery = true, value =
-        "SELECT u.email, u.edad, u.provincia, u.school_in_san_luis, r.fecha, r.carrera_obtenida FROM Resultados r JOIN Usuarios u WHERE r.active = true AND u.provincia = 'San Luis' AND r.interes = :interes " +
+        "SELECT u.email, u.edad, u.provincia, u.school_in_san_luis, r.fecha, r.carrera_obtenida FROM resultados r JOIN usuarios u WHERE r.active = true AND u.provincia = 'San Luis' AND r.interes = :interes " +
         "AND (u.edad >= :edadMinima AND u.edad <= :edadMaxima) " +
         "AND (YEAR(r.fecha) >= :anoMinimo AND YEAR(r.fecha) <= :anoMaximo) " +
         // "AND (:escuela IS NULL OR (u.provincia = 'San Luis' AND u.school_in_san_luis = :escuela)) " +
@@ -110,7 +110,7 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
     );
 
     @Query(nativeQuery = true, value =
-        "SELECT carrera_obtenida AS tipoCarrera, COUNT(*) AS cantidad FROM Resultados r JOIN Usuarios u ON r.id_usuario = u.id " +
+        "SELECT carrera_obtenida AS tipoCarrera, COUNT(*) AS cantidad FROM resultados r JOIN usuarios u ON r.id_usuario = u.id " +
         "WHERE (r.interes = :interes) " + 
         "AND (u.edad >= :edadMinima AND u.edad <= :edadMaxima) " +
         "AND (YEAR(r.fecha) >= :anoMinimo AND YEAR(r.fecha) <= :anoMaximo) " +
@@ -128,7 +128,7 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
     );
 
     @Query(nativeQuery = true, value =
-        "SELECT carrera_obtenida AS tipoCarrera, COUNT(*) AS cantidad FROM Resultados r JOIN Usuarios u ON r.id_usuario = u.id " +
+        "SELECT carrera_obtenida AS tipoCarrera, COUNT(*) AS cantidad FROM resultados r JOIN usuarios u ON r.id_usuario = u.id " +
         "WHERE (r.interes = :interes) " + 
         "AND (u.edad >= :edadMinima AND u.edad <= :edadMaxima) " +
         "AND (YEAR(r.fecha) >= :anoMinimo AND YEAR(r.fecha) <= :anoMaximo) " +
