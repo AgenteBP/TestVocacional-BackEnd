@@ -1,14 +1,12 @@
 package com.TrabajoFinal.TestVocacional.Services;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import com.TrabajoFinal.TestVocacional.Models.Resultados;
 import com.TrabajoFinal.TestVocacional.Repositories.ResultadoRepository;
 import com.TrabajoFinal.TestVocacional.exceptions.ErrorResponse;
@@ -56,6 +54,13 @@ public class ResultadoService {
     }
     public List<Object[]> findMostFrequentSchoolCom(List<String> escuelas) {
         return resultadoRepository.encontrarEscuelasMasFrecuentesComparativo(escuelas);
+    }
+
+    // Datos para tabla tabulada
+    // Cantidad en cada carrera
+
+    public List<Object[]> getQuantityByCareerTable() {
+        return resultadoRepository.obtenerCantidadPorCarreraTabulado();
     }
 
     // Graficos

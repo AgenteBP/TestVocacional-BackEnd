@@ -167,6 +167,14 @@ public class ResultadoController {
         return resultadoService.findMostFrequentSchoolCom(escuelas);
     }
 
+    // Datos para tabla tabulada
+    // Cantidad en cada carrera
+
+    @GetMapping("/resultados/quantityByCareerTable")
+    public List<Object[]> getQuantityByCareerTableController() {
+        return resultadoService.getQuantityByCareerTable();
+    }
+
     // Graficos
 
     @GetMapping("/resultados/viewGraph")
