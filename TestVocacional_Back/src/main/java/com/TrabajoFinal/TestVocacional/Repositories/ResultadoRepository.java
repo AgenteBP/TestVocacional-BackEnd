@@ -67,10 +67,41 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
         "SELECT COUNT(r) FROM Resultados r WHERE r.interes = true")
     Long contarResultadosConInteres();
 
-    @Query(
-        "SELECT r.carreraObtenida FROM Resultados r WHERE r.interes = true " +
-           "GROUP BY r.carreraObtenida " +
-           "ORDER BY COUNT(r) DESC")
+    // @Query(
+    //     "SELECT r.carreraObtenida FROM Resultados r WHERE r.interes = true " +
+    //        "GROUP BY r.carreraObtenida " +
+    //        "ORDER BY COUNT(r) DESC")
+    // @Query(nativeQuery = true, value = "SELECT carrera_obtenida AS tipoCarrera, COUNT(*) AS cantidad " +
+    //         "FROM Resultados r " +
+    //         "WHERE r.interes = true " +
+    //         "AND carrera_obtenida IN ('Ingeniería en Informática', 'Ingeniería en Computación', " +
+    //         "'Licenciatura en Ciencia de la Computación', 'Profesorado en Ciencias de la Computación', " +
+    //         "'Tecnicatura Universitaria en Web', 'Tecnicatura Universitaria en Redes de Computadoras') " +
+    //         "GROUP BY carrera_obtenida " +
+    //         "ORDER BY COUNT(*) DESC")
+    @Query(value = "SELECT carrera_obtenida AS tipoCarrera, COUNT(*) AS cantidad " +
+            "FROM Resultados r " +
+            "WHERE r.interes = true " +
+            "AND carrera_obtenida IN ('Ingeniería en Informática', 'Ingeniería en Computación', " +
+            "'Licenciatura en Ciencia de la Computación', 'Profesorado en Ciencias de la Computación', " +
+            "'Tecnicatura Universitaria en Web', 'Tecnicatura Universitaria en Redes de Computadoras') " +
+            "GROUP BY carrera_obtenida " +
+            "HAVING COUNT(*) = (" +
+            "   SELECT MAX(contador) " +
+            "   FROM (" +
+            "       SELECT COUNT(*) AS contador " +
+            "       FROM Resultados " +
+            "       WHERE interes = true " +
+            "       AND carrera_obtenida IN (" +
+            "           'Ingeniería en Informática', 'Ingeniería en Computación', " +
+            "           'Licenciatura en Ciencia de la Computación', 'Profesorado en Ciencias de la Computación', " +
+            "           'Tecnicatura Universitaria en Web', 'Tecnicatura Universitaria en Redes de Computadoras' " +
+            "       ) " +
+            "       GROUP BY carrera_obtenida" +
+            "   ) AS max_ocurrencias" +
+            ") " +
+            "ORDER BY carrera_obtenida",
+            nativeQuery = true)
     List<Object[]> encontrarCarreraMasElegidaConInteres();
 
     @Query(
@@ -91,6 +122,37 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
     "ORDER BY COUNT(*) DESC"
     )
     List<Object[]> encontrarEscuelasMasFrecuentesComparativo(@Param("escuelas") List<String> escuelas);
+
+    // Datos para tabla tabulada
+    // Cantidad en cada carrera
+    // @Query(value = "SELECT carrera_obtenida AS tipoCarrera, COUNT(*) AS cantidad " +
+    //         "FROM Resultados r " +
+    //         "WHERE r.interes = true " +
+    //         "AND carrera_obtenida IN ('Ingeniería en Informática', 'Ingeniería en Computación', " +
+    //         "'Licenciatura en Ciencia de la Computación', 'Profesorado en Ciencias de la Computación', " +
+    //         "'Tecnicatura Universitaria en Web', 'Tecnicatura Universitaria en Redes de Computadoras') " +
+    //         "GROUP BY carrera_obtenida " +
+    //         "ORDER BY COUNT(*) DESC")
+    // List<Object[]> obtenerCantidadPorCarreraTabuladosss();
+
+    @Query(value = "SELECT tipoCarrera, COALESCE(cantidad, 0) AS cantidad " +
+        "FROM (SELECT 'Ingeniería en Informática' AS tipoCarrera " +
+        "      UNION SELECT 'Ingeniería en Computación' " +
+        "      UNION SELECT 'Licenciatura en Ciencia de la Computación' " +
+        "      UNION SELECT 'Profesorado en Ciencias de la Computación' " +
+        "      UNION SELECT 'Tecnicatura Universitaria en Web' " +
+        "      UNION SELECT 'Tecnicatura Universitaria en Redes de Computadoras') carreras " +
+        "LEFT JOIN (SELECT carrera_obtenida, COUNT(*) AS cantidad " +
+        "           FROM Resultados r " +
+        "           WHERE r.interes = true AND " +
+        "           carrera_obtenida IN ('Ingeniería en Informática', 'Ingeniería en Computación', " +
+        "           'Licenciatura en Ciencia de la Computación', 'Profesorado en Ciencias de la Computación', " +
+        "           'Tecnicatura Universitaria en Web', 'Tecnicatura Universitaria en Redes de Computadoras') " +
+        "           GROUP BY carrera_obtenida) cantidades " +
+        "ON carreras.tipoCarrera = cantidades.carrera_obtenida", nativeQuery = true)
+    List<Object[]> obtenerCantidadPorCarreraTabulado();
+
+
     
     // Graficos
     @Query(nativeQuery = true, value =
