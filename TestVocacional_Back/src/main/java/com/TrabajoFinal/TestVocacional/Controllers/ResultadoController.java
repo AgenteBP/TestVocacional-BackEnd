@@ -175,11 +175,20 @@ public class ResultadoController {
         return resultadoService.getQuantityByCareerTable();
     }
 
+    // Escuelas donde se han realizado test
+    @GetMapping("/resultados/quantityBySchoolTable")
+    public ResponseEntity<Page<Object[]>> getQuantityBySchoolTableController(@RequestParam Map<String, String> map) {
+        int page = map.containsKey("page") ? Integer.parseInt(map.get("page")) : 0;
+        int quantityPerPage = map.containsKey("quantity") ? Integer.parseInt(map.get("quantity")) : 10;
+
+        Page<Object[]> escuelas = resultadoService.getQuantityBySchoolTable(page, quantityPerPage);
+        return new ResponseEntity<>(escuelas, HttpStatus.OK);
+    }
+
     // Graficos
 
     @GetMapping("/resultados/viewGraph")
     public List<Object[]> getCantForCarreras(@RequestParam Map<String, String> map) {
-
 
         // Obtener parámetros adicionales para la búsqueda
         boolean interes = Boolean.parseBoolean(map.getOrDefault("interes", "true"));

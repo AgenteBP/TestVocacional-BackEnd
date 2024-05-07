@@ -63,6 +63,11 @@ public class ResultadoService {
         return resultadoRepository.obtenerCantidadPorCarreraTabulado();
     }
 
+    // Escuelas donde se han realizado test
+    public Page<Object[]> getQuantityBySchoolTable(int page, int quantityPerPage) {
+        return resultadoRepository.obtenerCantidadEscuelasPaginado(PageRequest.of(page, quantityPerPage));
+    }
+
     // Graficos
     public List<Object[]> obtenerCantidadUsuariosPorCarrerasTotal(Boolean interes,Integer edadMinima,Integer edadMaxima,Integer anoMinimo,Integer anoMaximo) {
         return resultadoRepository.obtenerCantidadUsuariosPorCarrerasTotal(
