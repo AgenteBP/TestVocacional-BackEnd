@@ -59,7 +59,7 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
     Long contarResultadosConInteres();
 
     @Query(value = "SELECT carrera_obtenida AS tipoCarrera, COUNT(*) AS cantidad " +
-            "FROM Resultados r " +
+            "FROM resultados r " +
             "WHERE r.interes = true " +
             "AND carrera_obtenida IN ('Ingeniería en Informática', 'Ingeniería en Computación', " +
             "'Licenciatura en Ciencia de la Computación', 'Profesorado en Ciencias de la Computación', " +
@@ -69,7 +69,7 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
             "   SELECT MAX(contador) " +
             "   FROM (" +
             "       SELECT COUNT(*) AS contador " +
-            "       FROM Resultados " +
+            "       FROM resultados " +
             "       WHERE interes = true " +
             "       AND carrera_obtenida IN (" +
             "           'Ingeniería en Informática', 'Ingeniería en Computación', " +
@@ -112,7 +112,7 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
         "      UNION SELECT 'Tecnicatura Universitaria en Web' " +
         "      UNION SELECT 'Tecnicatura Universitaria en Redes de Computadoras') carreras " +
         "LEFT JOIN (SELECT carrera_obtenida, COUNT(*) AS cantidad " +
-        "           FROM Resultados r " +
+        "           FROM resultados r " +
         "           WHERE r.interes = true AND " +
         "           carrera_obtenida IN ('Ingeniería en Informática', 'Ingeniería en Computación', " +
         "           'Licenciatura en Ciencia de la Computación', 'Profesorado en Ciencias de la Computación', " +
@@ -123,7 +123,7 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
 
     // Escuelas donde se han realizado test
     @Query(nativeQuery = true, value = "SELECT u.school_in_san_luis, COUNT(*) AS cantidad " +
-                   "FROM Usuarios u " +
+                   "FROM usuarios u " +
                    "WHERE u.provincia = 'San Luis' " +
                    "GROUP BY u.school_in_san_luis " +
                    "ORDER BY COUNT(*) DESC"
