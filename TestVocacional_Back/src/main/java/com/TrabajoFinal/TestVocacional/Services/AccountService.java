@@ -65,6 +65,7 @@ public class AccountService {
             .active(true)
             .role(Role.ADMIN)
             .build();
+            
 
         accountRepository.save(account);
 

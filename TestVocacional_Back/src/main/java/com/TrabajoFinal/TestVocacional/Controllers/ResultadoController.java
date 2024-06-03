@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.TrabajoFinal.TestVocacional.Models.Resultados;
+import com.TrabajoFinal.TestVocacional.DTO.ResultadoDTO;
 import com.TrabajoFinal.TestVocacional.Services.ResultadoService;
 import com.TrabajoFinal.TestVocacional.Urls.UrlFront;
 
@@ -185,6 +185,25 @@ public class ResultadoController {
         return new ResponseEntity<>(escuelas, HttpStatus.OK);
     }
 
+    // Alumnos que han hechos test con seguimiento
+    @GetMapping("/resultados/tour")
+    public ResponseEntity<Page<Object[]>> getTableTourController(@RequestParam Map<String, String> map) {
+        int page = map.containsKey("page") ? Integer.parseInt(map.get("page")) : 0;
+        int quantityPerPage = map.containsKey("quantity") ? Integer.parseInt(map.get("quantity")) : 10;
+
+        Page<Object[]> escuelas = resultadoService.getTableTour(page, quantityPerPage);
+        return new ResponseEntity<>(escuelas, HttpStatus.OK);
+    }
+
+    // Alumnos de escuelas en San Luis que han hechos test con seguimiento
+    @GetMapping("/resultados/tracking")
+    public ResponseEntity<List<Object[]> > getTableTrackingController(@RequestParam Map<String, String> map) {
+        int idResultado = Integer.parseInt(map.get("idResultado"));
+
+        List<Object[]>  escuelas = resultadoService.getTableTracking(idResultado);
+        return new ResponseEntity<>(escuelas, HttpStatus.OK);
+    }
+
     // Graficos
 
     @GetMapping("/resultados/viewGraph")
@@ -229,30 +248,6 @@ public class ResultadoController {
         return resultados;
     }
 
-
-    
-
-    // @GetMapping(value = "/resultados/viewAll")
-    // public Page<Object[]> getAllResultados(@RequestParam Map<String, String> map) {
-        
-    //     Page<Object[]> page;
-
-    //     if (!map.containsKey("page") && !map.containsKey("quantity")) {
-    //         page = this.resultadoService.getAll(this.DEFAULT_PAGE_NUMBER,
-    //                 this.DEFAULT_QUANTITY_PER_PAGE);
-    //     } else if (map.containsKey("page") && !map.containsKey("quantity")) {
-    //         page = this.resultadoService.getAll(Integer.parseInt(map.get("page")),
-    //                 this.DEFAULT_QUANTITY_PER_PAGE);
-    //     } else if (!map.containsKey("page") && map.containsKey("quantity")) {
-    //         page = this.resultadoService.getAll(this.DEFAULT_PAGE_NUMBER,
-    //                 Integer.parseInt(map.get("quantity")));
-    //     } else {
-    //         page = this.resultadoService.getAll(Integer.parseInt(map.get("page")),
-    //                 Integer.parseInt(map.get("quantity")));
-    //     }
-    //     return page;
-    // }
-
     @GetMapping("/resultados/viewAll")
     public Page<Object[]> getAllResultados(@RequestParam Map<String, String> map) {
 
@@ -276,14 +271,14 @@ public class ResultadoController {
 
 
     @PostMapping(value = "/resultados")
-    public ResponseEntity<Resultados> postUsuarios(@RequestBody Resultados resultados) {
-        System.out.println("el id Usuario tieneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee "+ resultados.getIdUsuario());
-        Resultados resultadoInsertado = resultadoService.insert(resultados);
+    public ResponseEntity<ResultadoDTO> postUsuarios(@RequestBody ResultadoDTO resultadoDTO) {
+        System.out.println("el id Usuario tieneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee "+ resultadoDTO.getResultados().getIdUsuario());
+        ResultadoDTO resultadoDTOInsertado = resultadoService.insert(resultadoDTO);
         
         // Verifica si la inserción fue exitosa
-        if (resultadoInsertado != null && resultadoInsertado.getId() != null) {
+        if (resultadoDTOInsertado != null && resultadoDTOInsertado.getResultados().getId() != null) {
             // Devuelve el usuario con la ID generada y un código de estado 201 (CREATED)
-            return new ResponseEntity<>(resultadoInsertado, HttpStatus.CREATED);
+            return new ResponseEntity<>(resultadoDTOInsertado, HttpStatus.CREATED);
         } else {
             // Si la inserción falla, puedes devolver un código de estado 500 (INTERNAL_SERVER_ERROR)
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

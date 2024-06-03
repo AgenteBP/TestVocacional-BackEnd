@@ -41,6 +41,8 @@ public class Resultados {
     @Column(nullable = false)
     private boolean interes = true;
 
+    @Column(nullable = false)
+    private boolean saveTest;
 
     @Column(nullable = false)
     private boolean active = true;
@@ -95,6 +97,14 @@ public class Resultados {
 
     public void setInteres(boolean interes) {
         this.interes = interes;
+    }
+
+    public boolean getSaveTest() {
+        return saveTest;
+    }
+
+    public void setSaveTest(boolean saveTest) {
+        this.saveTest = saveTest;
     }
 
     public boolean isActive() {

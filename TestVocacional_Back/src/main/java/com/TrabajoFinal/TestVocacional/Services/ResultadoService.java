@@ -1,5 +1,6 @@
 package com.TrabajoFinal.TestVocacional.Services;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -7,7 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import com.TrabajoFinal.TestVocacional.DTO.ResultadoDTO;
+import com.TrabajoFinal.TestVocacional.Models.Recorrido;
 import com.TrabajoFinal.TestVocacional.Models.Resultados;
+import com.TrabajoFinal.TestVocacional.Repositories.RecorridoRepository;
 import com.TrabajoFinal.TestVocacional.Repositories.ResultadoRepository;
 import com.TrabajoFinal.TestVocacional.exceptions.ErrorResponse;
 
@@ -16,6 +21,8 @@ public class ResultadoService {
     
     @Autowired
     private ResultadoRepository resultadoRepository;
+    @Autowired
+    private RecorridoRepository recorridoRepository;
 
     public Page<Object[]> getAllEsResArg(String opcion, String valor, Integer edadDesde, Integer edadHasta, Boolean interes, int page, int quantityPerPage) {
 
@@ -68,6 +75,16 @@ public class ResultadoService {
         return resultadoRepository.obtenerCantidadEscuelasPaginado(PageRequest.of(page, quantityPerPage));
     }
 
+    // Alumnos que han hechos test con seguimiento
+    public Page<Object[]> getTableTour(int page, int quantityPerPage) {
+        return resultadoRepository.obtenerRecorridoDeTest(PageRequest.of(page, quantityPerPage));
+    }
+
+    // Alumnos de escuelas en San Luis que han hechos test con seguimiento
+    public List<Object[]> getTableTracking(int idResultado) {
+        return resultadoRepository.obtenerSeguimientoDeTest(idResultado);
+    }
+
     // Graficos
     public List<Object[]> obtenerCantidadUsuariosPorCarrerasTotal(Boolean interes,Integer edadMinima,Integer edadMaxima,Integer anoMinimo,Integer anoMaximo) {
         return resultadoRepository.obtenerCantidadUsuariosPorCarrerasTotal(
@@ -96,28 +113,44 @@ public class ResultadoService {
         return resultadoRepository.getDataAllForSearch(opcion, valor, edadDesde, edadHasta, interes, PageRequest.of(page, quantityPerPage));
     }
 
-    public Resultados insert(Resultados resultados) {
+    public ResultadoDTO insert(ResultadoDTO resultadoDTO) {
         
-        // Usuarios usuarios = new Usuarios();
-        // usuarios.setId(resultados.getUsuarios().getId());
-        // resultados.setUsuarios(usuarios);
         Resultados resultados2 = new Resultados();
+        Integer idResultado;
+        List<Recorrido> recorridosActualizados = new ArrayList<>();
         try {
-            if(resultados.isInteres() == true){
-                resultados2.setCarreraObtenida(resultados.getCarreraObtenida());
-            }
-            else{
-                resultados2.setCarreraObtenida(null);
-            }
-            resultados.setActive(true);
-            resultados2 = this.resultadoRepository.save(resultados);
+            // if(resultadoDTO.getResultados().isInteres() == true){
+            //     resultados2.setCarreraObtenida(resultadoDTO.getResultados().getCarreraObtenida());
+            // }
+            // else{
+            //     resultados2.setCarreraObtenida(null);
+            // }
+            resultadoDTO.getResultados().setActive(true);
+            resultados2 = this.resultadoRepository.save(resultadoDTO.getResultados());
+            System.out.println("el indicador de recorrido es "+ resultadoDTO.getResultados().getSaveTest());
+            if(resultadoDTO.getResultados().getSaveTest() == true){
+                idResultado = resultados2.getId();
             
+                // Asignar el ID del resultado a cada recorrido
+                for (Recorrido recorrido : resultadoDTO.getRecorrido()) {
+                    recorrido.setIdResultado(idResultado);
+                    recorrido.setActive(true); // Si es necesario activar el recorrido
+                    recorridosActualizados.add(recorrido);
+                }
+                recorridoRepository.saveAll(recorridosActualizados);
+            }
+            
+
         } catch (DataIntegrityViolationException e) {
             e.printStackTrace();
             throw new ErrorResponse(e.getMostSpecificCause().getMessage(),
                     HttpStatus.UNPROCESSABLE_ENTITY);
         }
-        return resultados2;
+        return resultadoDTO;
     }
+
+    
+
+    
 
 }
