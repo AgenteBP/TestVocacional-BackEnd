@@ -3,6 +3,7 @@ package com.TrabajoFinal.TestVocacional.Repositories;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -26,7 +27,7 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
     "u.edad >= :edadDesde AND u.edad <= :edadHasta AND r.interes = :interes")
     Page<Object[]> getDataNoResident(@Param("opcion") String opcion, @Param("valor") String valor,  @Param("edadDesde") Integer edadDesde, @Param("edadHasta") Integer edadHasta, @Param("interes") Boolean interes, Pageable pageable);
 
-    @Query("SELECT u.email, u.edad, u.provincia, u.schoolInSanLuis, r.fecha, r.carreraObtenida FROM Resultados r JOIN r.usuarios u WHERE r.active = true AND u.provincia = 'San Luis' " +
+    @Query("SELECT u.email, u.edad, u.provincia, u.schoolInSanLuis, r.fecha, r.carreraObtenida, r.id FROM Resultados r JOIN r.usuarios u WHERE r.active = true AND u.provincia = 'San Luis' " +
     " AND (:opcion IS NULL OR " +
     "(:opcion = 'email' AND u.email LIKE %:valor%) OR " +
     "(:opcion = 'schoolInSanLuis' AND u.schoolInSanLuis LIKE %:valor%) OR " +
@@ -35,7 +36,7 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
     Page<Object[]> getDataSchoolInSanLuis( @Param("opcion") String opcion, @Param("valor") String valor, @Param("edadDesde") Integer edadDesde, @Param("edadHasta") Integer edadHasta, @Param("interes") Boolean interes, Pageable pageable);
 
     @Query(nativeQuery = true, value =
-        "SELECT u.email, u.edad, u.provincia, u.school_in_san_luis, r.fecha, r.carrera_obtenida FROM resultados r JOIN usuarios u WHERE r.active = true AND u.provincia = 'San Luis' AND r.interes = :interes " +
+        "SELECT u.email, u.edad, u.provincia, u.school_in_san_luis, r.fecha, r.carrera_obtenida, r.id FROM resultados r JOIN usuarios u WHERE r.active = true AND u.provincia = 'San Luis' AND r.interes = :interes " +
         "AND (u.edad >= :edadMinima AND u.edad <= :edadMaxima) " +
         "AND (YEAR(r.fecha) >= :anoMinimo AND YEAR(r.fecha) <= :anoMaximo) " +
         // "AND (:escuela IS NULL OR (u.provincia = 'San Luis' AND u.school_in_san_luis = :escuela)) " +
@@ -130,6 +131,26 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
                    )
     Page<Object[]> obtenerCantidadEscuelasPaginado(Pageable pageable);
 
+    // Alumnos que han hechos test con seguimiento
+    @Query(value = "SELECT u.email, u.edad, r.fecha, u.pais_origen, u.provincia, " +
+            "u.school_in_san_luis, r.carrera_obtenida, GROUP_CONCAT(rec.id_pregunta ORDER BY rec.id) AS id_preguntas, " +
+            "GROUP_CONCAT(rec.opcion_seleccionada ORDER BY rec.id) AS opciones_seleccionadas " +
+            "FROM usuarios u " +
+            "JOIN resultados r ON u.id = r.id_usuario " +
+            "JOIN recorrido rec ON r.id = rec.id_resultado " +
+            "WHERE r.interes = true AND r.save_test = true " +
+            "GROUP BY u.email, u.edad, r.fecha, u.pais_origen, u.provincia, " +
+            "u.school_in_san_luis, r.carrera_obtenida",
+            countQuery = "SELECT count(*) FROM resultados",
+            nativeQuery = true)
+    Page<Object[]> obtenerRecorridoDeTest(Pageable pageable);
+
+    // Alumnos de escuelas en San Luis que han hechos test con seguimiento
+    @Query(value = "SELECT rec.id_pregunta, rec.opcion_seleccionada " +
+            "FROM recorrido rec " +
+            "WHERE rec.active = true AND rec.id_resultado = :idResultado ",
+            nativeQuery = true)
+    List<Object[]> obtenerSeguimientoDeTest(@Param("idResultado")int idResultado);
     
     // Graficos
     @Query(nativeQuery = true, value =
