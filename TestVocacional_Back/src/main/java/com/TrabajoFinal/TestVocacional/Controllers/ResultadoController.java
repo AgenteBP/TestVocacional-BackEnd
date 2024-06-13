@@ -136,6 +136,7 @@ public class ResultadoController {
         // String escuela = "null".equals(escuelaParam) ? null : escuelaParam;
         String escuela = "Todas las escuelas".equalsIgnoreCase(escuelaParam) || "null".equalsIgnoreCase(escuelaParam) ? null : escuelaParam;
 
+        System.out.println("las escuelas tienen "+escuelaParam);
         Page<Object[]> resultados = resultadoService.getAllSchoolInSanLuisFilterP(interes, edadMinima, edadMaxima, anoMinimo, anoMaximo, escuela, page, quantityPerPage);
 
         // return new ResponseEntity<>(resultados, HttpStatus.OK);
