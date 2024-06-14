@@ -35,12 +35,22 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
     "u.edad >= :edadDesde AND u.edad <= :edadHasta AND r.interes = :interes")
     Page<Object[]> getDataSchoolInSanLuis( @Param("opcion") String opcion, @Param("valor") String valor, @Param("edadDesde") Integer edadDesde, @Param("edadHasta") Integer edadHasta, @Param("interes") Boolean interes, Pageable pageable);
 
+    // @Query(nativeQuery = true, value =
+    //     "SELECT u.email, u.edad, u.provincia, u.school_in_san_luis, r.fecha, r.carrera_obtenida, r.id FROM resultados r JOIN usuarios u WHERE r.active = true AND u.provincia = 'San Luis' AND r.interes = :interes " +
+    //     "AND (u.edad >= :edadMinima AND u.edad <= :edadMaxima) " +
+    //     "AND (YEAR(r.fecha) >= :anoMinimo AND YEAR(r.fecha) <= :anoMaximo) " +
+    //     // "AND (:escuela IS NULL OR (u.provincia = 'San Luis' AND u.school_in_san_luis = :escuela)) " +
+    //     "AND ((:escuela IS NULL AND u.provincia = 'San Luis') OR (u.school_in_san_luis = :escuela)) ")
     @Query(nativeQuery = true, value =
-        "SELECT u.email, u.edad, u.provincia, u.school_in_san_luis, r.fecha, r.carrera_obtenida, r.id FROM resultados r JOIN usuarios u WHERE r.active = true AND u.provincia = 'San Luis' AND r.interes = :interes " +
+        "SELECT DISTINCT u.email, u.edad, u.provincia, u.school_in_san_luis, r.fecha, r.carrera_obtenida, r.id " +
+        "FROM resultados r " +
+        "JOIN usuarios u ON r.id_usuario = u.id " + // Asegúrate de que los campos de unión sean correctos
+        "WHERE r.active = true " +
+        "AND u.provincia = 'San Luis' " +
+        "AND r.interes = :interes " +
         "AND (u.edad >= :edadMinima AND u.edad <= :edadMaxima) " +
         "AND (YEAR(r.fecha) >= :anoMinimo AND YEAR(r.fecha) <= :anoMaximo) " +
-        // "AND (:escuela IS NULL OR (u.provincia = 'San Luis' AND u.school_in_san_luis = :escuela)) " +
-        "AND ((:escuela IS NULL AND u.provincia = 'San Luis') OR (u.school_in_san_luis = :escuela)) ")
+        "AND ((:escuela IS NULL AND u.provincia = 'San Luis') OR (u.school_in_san_luis = :escuela))")
     Page<Object[]> getDataSchoolInSanLuisFilterP(@Param("interes") Boolean interes, 
         @Param("edadMinima") Integer edadMinima,
         @Param("edadMaxima") Integer edadMaxima,
