@@ -38,8 +38,8 @@ public class Resultados {
     @Temporal(TemporalType.DATE)
     private Date fecha;
 
-    @Column(nullable = false)
-    private boolean interes = true;
+    @Column(nullable = true)
+    private boolean interes;
 
     @Column(nullable = false)
     private boolean saveTest;

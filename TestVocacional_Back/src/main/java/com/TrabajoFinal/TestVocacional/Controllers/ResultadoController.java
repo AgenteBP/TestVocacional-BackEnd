@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.TrabajoFinal.TestVocacional.DTO.ResultadoDTO;
 import com.TrabajoFinal.TestVocacional.Services.ResultadoService;
 import com.TrabajoFinal.TestVocacional.Urls.UrlFront;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 @RestController
 @CrossOrigin(origins = {UrlFront.urlLocal, UrlFront.urlNetlify})
@@ -283,6 +286,19 @@ public class ResultadoController {
         } else {
             // Si la inserción falla, puedes devolver un código de estado 500 (INTERNAL_SERVER_ERROR)
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/resultadosU/{id}")
+    public ResponseEntity<?> updateUsuarios(@PathVariable  Integer id, @RequestBody Map<String, Object> payload){
+
+        Boolean interes = (Boolean) payload.get("interes");
+
+        if(resultadoService.update(id, interes)){
+            return new ResponseEntity<String>("Resultado actualizado", HttpStatus.CREATED);
+        }
+        else{
+            return new ResponseEntity<String>("Bad Request", HttpStatus.BAD_REQUEST);
         }
     }
 }

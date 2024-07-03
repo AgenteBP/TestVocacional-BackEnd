@@ -14,6 +14,7 @@ import com.TrabajoFinal.TestVocacional.Models.Recorrido;
 import com.TrabajoFinal.TestVocacional.Models.Resultados;
 import com.TrabajoFinal.TestVocacional.Repositories.RecorridoRepository;
 import com.TrabajoFinal.TestVocacional.Repositories.ResultadoRepository;
+import com.TrabajoFinal.TestVocacional.Utils.GetApproximateCareer;
 import com.TrabajoFinal.TestVocacional.exceptions.ErrorResponse;
 
 @Service
@@ -118,6 +119,7 @@ public class ResultadoService {
         Resultados resultados2 = new Resultados();
         Integer idResultado;
         List<Recorrido> recorridosActualizados = new ArrayList<>();
+        String result = "";
         try {
             // if(resultadoDTO.getResultados().isInteres() == true){
             //     resultados2.setCarreraObtenida(resultadoDTO.getResultados().getCarreraObtenida());
@@ -125,6 +127,13 @@ public class ResultadoService {
             // else{
             //     resultados2.setCarreraObtenida(null);
             // }
+
+            // Logica para obtener carrera aproximada
+            result = GetApproximateCareer.getCarrer(resultadoDTO.getRecorrido());
+
+            //Funcion para determinar la carrera aproximada
+            
+            resultadoDTO.getResultados().setCarreraObtenida(result);
             resultadoDTO.getResultados().setActive(true);
             resultados2 = this.resultadoRepository.save(resultadoDTO.getResultados());
             System.out.println("el indicador de recorrido es "+ resultadoDTO.getResultados().getSaveTest());
@@ -147,6 +156,11 @@ public class ResultadoService {
                     HttpStatus.UNPROCESSABLE_ENTITY);
         }
         return resultadoDTO;
+    }
+
+    public boolean update(Integer id, Boolean interes) {
+        int updatedRows = resultadoRepository.update(id, interes);
+        return updatedRows > 0;
     }
 
     

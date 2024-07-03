@@ -37,7 +37,7 @@ public class Recorrido {
     private Integer idPregunta;
 
     @Column(nullable = false, length = 50)
-    private String opcionSeleccionada;
+    private String valorSeleccionado;
 
     @Column(nullable = false)
     private boolean active = true;

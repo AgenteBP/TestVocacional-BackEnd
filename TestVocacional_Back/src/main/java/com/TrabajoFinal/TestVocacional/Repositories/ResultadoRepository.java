@@ -3,13 +3,15 @@ package com.TrabajoFinal.TestVocacional.Repositories;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.TrabajoFinal.TestVocacional.Models.Resultados;
+
+import jakarta.transaction.Transactional;
 
 public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
 
@@ -144,7 +146,7 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
     // Alumnos que han hechos test con seguimiento
     @Query(value = "SELECT u.email, u.edad, r.fecha, u.pais_origen, u.provincia, " +
             "u.school_in_san_luis, r.carrera_obtenida, GROUP_CONCAT(rec.id_pregunta ORDER BY rec.id) AS id_preguntas, " +
-            "GROUP_CONCAT(rec.opcion_seleccionada ORDER BY rec.id) AS opciones_seleccionadas " +
+            "GROUP_CONCAT(rec.valor_seleccionado ORDER BY rec.id) AS valores_seleccionados " +
             "FROM usuarios u " +
             "JOIN resultados r ON u.id = r.id_usuario " +
             "JOIN recorrido rec ON r.id = rec.id_resultado " +
@@ -156,7 +158,7 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
     Page<Object[]> obtenerRecorridoDeTest(Pageable pageable);
 
     // Alumnos de escuelas en San Luis que han hechos test con seguimiento
-    @Query(value = "SELECT rec.id_pregunta, rec.opcion_seleccionada " +
+    @Query(value = "SELECT rec.id_pregunta, rec.valor_seleccionado " +
             "FROM recorrido rec " +
             "WHERE rec.active = true AND rec.id_resultado = :idResultado ",
             nativeQuery = true)
@@ -224,5 +226,10 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
     Page<Object[]> getDataAllForSearch( @Param("opcion") String opcion, @Param("valor") String valor, @Param("edadDesde") Integer edadDesde, @Param("edadHasta") Integer edadHasta, @Param("interes") Boolean interes, Pageable pageable);
 
     Page<Resultados> findAllByActiveTrue(Pageable pageable);
+
+    @Modifying
+    @Transactional
+    @Query(nativeQuery = true, value = "UPDATE resultados r SET r.interes = :interes WHERE r.id = :id")
+    int update(@Param("id")Integer id, @Param("interes")Boolean interes);
 
 }
