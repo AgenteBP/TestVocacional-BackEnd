@@ -13,9 +13,5 @@ import lombok.NoArgsConstructor;
 public class ResultadoDTO {
     
     private Resultados resultados;
-    // private Integer id;
-    // private Integer idUsuario;
-    // private Date fecha;
-    // private boolean saveTest;
     private List<Recorrido> recorrido;
 }

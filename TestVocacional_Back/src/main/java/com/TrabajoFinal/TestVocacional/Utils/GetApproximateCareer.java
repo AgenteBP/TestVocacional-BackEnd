@@ -1,10 +1,13 @@
 package com.TrabajoFinal.TestVocacional.Utils;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import com.TrabajoFinal.TestVocacional.DTO.ResultAndScoreDTO;
+import com.TrabajoFinal.TestVocacional.Models.PuntajesDeResultados;
 import com.TrabajoFinal.TestVocacional.Models.Recorrido;
 
 public class GetApproximateCareer {
@@ -34,13 +37,22 @@ public class GetApproximateCareer {
 
     }
 
+    // Método para redondear un valor Double a dos decimales
+    private static Double roundTwoDecimals(Double valor) {
+        if (valor == null) {
+            return null;
+        }
+        BigDecimal bd = new BigDecimal(valor).setScale(2, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+
     private static String determineLargestValue() {
         // Crear un mapa con los nombres de las variables y sus valores
         Map<String, Double> variables = new HashMap<>();
         variables.put("Licenciatura en Ciencia de la Computación", lc);
         variables.put("Profesorado en Ciencias de la Computación", pc);
-        variables.put("Tecnicatura Universitaria en Web", tw);
-        variables.put("Tecnicatura Universitaria en Redes de Computadoras", tr);
+        // variables.put("Tecnicatura Universitaria en Web", tw);
+        // variables.put("Tecnicatura Universitaria en Redes de Computadoras", tr);
         variables.put("Ingeniería en Informática", ief);
         variables.put("Ingeniería en Computación", ic);
 
@@ -58,7 +70,7 @@ public class GetApproximateCareer {
         return maxEntry.getKey();
     }
 
-    public static String getCarrer(List<Recorrido> recorrido) {
+    public static ResultAndScoreDTO getCarrer(List<Recorrido> recorrido) {
 
         System.out.println("el valor seleccionado de una recorrido es " + recorrido.get(0).getValorSeleccionado());
 
@@ -66,6 +78,8 @@ public class GetApproximateCareer {
         recorridoConverted = convertStringToInteger(recorrido, recorridoConverted);
         System.out.println("el valor seleccionado de una recorrido ya convertido es " + recorridoConverted.get(0));
         String result = "";
+        ResultAndScoreDTO resultAndScoreDTO = new ResultAndScoreDTO();
+        PuntajesDeResultados puntajesDeResultados = new PuntajesDeResultados();
         int size = recorrido.size();
 
         for (int i = 0; i < size -2; i++) {
@@ -84,12 +98,12 @@ public class GetApproximateCareer {
                     lc = lc + recorridoConverted.get(i);
                     break;
                 case 5:
-                    lc = lc + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_60));
-                    pc = pc + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_60));
-                    ief = ief + recorridoConverted.get(i);
-                    ic = ic + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_20));
-                    tw = tw + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_20));
-                    tr = tr + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_20));
+                    lc = lc + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_50));
+                    pc = pc + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_50));
+                    ief = ief + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_10));
+                    ic = ic + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_50));
+                    tw = tw + recorridoConverted.get(i);
+                    tr = tr + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_60));
                     break;
                 case 6:
                     // lc = lc + recorridoConverted.get(i) ;
@@ -103,25 +117,25 @@ public class GetApproximateCareer {
                     ief = ief + recorridoConverted.get(i);
                     break;
                 case 8:
-                    ief = ief + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_10));
+                    ief = ief + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_50));
                     tw = tw + recorridoConverted.get(i);
                     break;
                 case 9:
                     lc = lc + recorridoConverted.get(i);
-                    pc = pc + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_40));
-                    ief = ief + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_40));
-                    ic = ic + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_40));
-                    tw = tw + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_40));
+                    pc = pc + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_50));
+                    ief = ief + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_50));
+                    ic = ic + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_50));
+                    tw = tw + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_50));
                     break;
                 case 10:
-                    ief = ief + recorridoConverted.get(i);
-                    ic = ic + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_50));
+                    // ief = ief + recorridoConverted.get(i);
+                    // ic = ic + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_50));
                     break;
                 case 11:
-                    lc = lc + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_60));
-                    pc = pc + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_60));
-                    ief = ief + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_60));
-                    ic = ic + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_30));
+                    // lc = lc + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_60));
+                    // pc = pc + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_60));
+                    // ief = ief + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_60));
+                    ic = ic + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_40));
                     // tw = tw + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_40));
                     tr = tr + recorridoConverted.get(i);
                     break;
@@ -129,13 +143,13 @@ public class GetApproximateCareer {
                     ic = ic + recorridoConverted.get(i);
                     break;
                 case 13:
-                    ic = ic + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_40));
-                    tr = tr + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_40));
+                    // ic = ic + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_40));
+                    // tr = tr + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_40));
                     break;
                 case 14:
-                    lc = lc + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_20));
-                    ic = ic + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_20));
-                    // tr = tr + recorridoConverted.get(i);
+                    // lc = lc + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_20));
+                    ic = ic + (recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_50));
+                    tr = tr + recorridoConverted.get(i);
                     break;
                 case 15:
                     tw = tw + recorridoConverted.get(i);
@@ -156,6 +170,13 @@ public class GetApproximateCareer {
                     pc = pc + recorridoConverted.get(i);
                     break;
             }
+            System.out.println("los contadores tiene en la iteracion: "+ (i+1));
+            System.out.println("lc: " +lc);
+            System.out.println("pc: " +pc);
+            System.out.println("if: " +ief);
+            System.out.println("ic: " +ic);
+            System.out.println("tw: " +tw);
+            System.out.println("tr: " +tr);
         }
 
         System.out.println("los contadores tiene:");
@@ -165,6 +186,15 @@ public class GetApproximateCareer {
         System.out.println("ic: " +ic);
         System.out.println("tw: " +tw);
         System.out.println("tr: " +tr);
+
+        puntajesDeResultados.setLc(roundTwoDecimals(lc));
+        puntajesDeResultados.setPc(roundTwoDecimals(pc));
+        puntajesDeResultados.setIef(roundTwoDecimals(ief));
+        puntajesDeResultados.setIc(roundTwoDecimals(ic));
+        puntajesDeResultados.setTw(roundTwoDecimals(tw));
+        puntajesDeResultados.setTr(roundTwoDecimals(tr));
+
+        resultAndScoreDTO.setPuntajesDeResultados(puntajesDeResultados);
 
         if(recorrido.get(size-2).getValorSeleccionado().equals("3 años")){
             if(tw > tr){
@@ -191,6 +221,15 @@ public class GetApproximateCareer {
             }
         }
 
-        return result;
+        resultAndScoreDTO.setResult(result);
+
+        lc = 0.0;
+        pc = 0.0;
+        ief = 0.0;
+        ic = 0.0;
+        tw = 0.0;
+        tr = 0.0;
+
+        return resultAndScoreDTO;
     }
 }
