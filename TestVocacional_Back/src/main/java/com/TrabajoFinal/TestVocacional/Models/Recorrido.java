@@ -36,6 +36,9 @@ public class Recorrido {
     @Column(nullable = false)
     private Integer idPregunta;
 
+    @Column(nullable = false)
+    private String preguntaTexto;
+
     @Column(nullable = false, length = 50)
     private String valorSeleccionado;
 

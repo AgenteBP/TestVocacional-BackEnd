@@ -158,9 +158,9 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
     Page<Object[]> obtenerRecorridoDeTest(Pageable pageable);
 
     // Alumnos de escuelas en San Luis que han hechos test con seguimiento
-    @Query(value = "SELECT rec.id_pregunta, rec.valor_seleccionado " +
-            "FROM recorrido rec " +
-            "WHERE rec.active = true AND rec.id_resultado = :idResultado ",
+    @Query(value = "SELECT rec.pregunta_texto, rec.valor_seleccionado, pun.lc, pun.pc, pun.ief, pun.ic, pun.tw, pun.tr " +
+            "FROM recorrido rec JOIN puntajes_de_resultados pun " +
+            "WHERE rec.active = true AND rec.id_resultado = :idResultado AND pun.id_resultado = :idResultado",
             nativeQuery = true)
     List<Object[]> obtenerSeguimientoDeTest(@Param("idResultado")int idResultado);
     
