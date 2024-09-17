@@ -86,69 +86,69 @@ public class GetApproximateCareer {
 
         for (int i = 0; i < size -2; i++) {
             switch (recorrido.get(i).getIdPregunta()) {
-                case 1:
-                    lc = lc + (recorridoConverted.get(i) * PERCENT_30);
-                    pc = pc + (recorridoConverted.get(i) * PERCENT_30);
-                    ief = ief + (recorridoConverted.get(i) * PERCENT_40);
-                    ic = ic + (recorridoConverted.get(i) * PERCENT_30);
-                    tw = tw + (recorridoConverted.get(i) * PERCENT_40);
-                    tr = tr + (recorridoConverted.get(i) * PERCENT_20);
-                    break;
+                // case 1:
+                //     lc = lc + (recorridoConverted.get(i) * PERCENT_30);
+                //     pc = pc + (recorridoConverted.get(i) * PERCENT_30);
+                //     ief = ief + (recorridoConverted.get(i) * PERCENT_40);
+                //     ic = ic + (recorridoConverted.get(i) * PERCENT_30);
+                //     tw = tw + (recorridoConverted.get(i) * PERCENT_40);
+                //     tr = tr + (recorridoConverted.get(i) * PERCENT_20);
+                //     break;
                 // case 1:
                 //     pc = pc + recorridoConverted.get(i);
                 //     break;
-                case 2:
+                case 1:
                     // lc = lc + recorridoConverted.get(i) - (recorridoConverted.get(i) * PERCENT_60);
                     // pc = pc + recorridoConverted.get(i);
                     lc = lc + (recorridoConverted.get(i) * PERCENT_40);
                     pc = pc + (recorridoConverted.get(i) * PERCENT_30);
-                    ief = ief + (recorridoConverted.get(i) * PERCENT_50);
+                    ief = ief + (recorridoConverted.get(i) * PERCENT_60);
                     ic = ic + (recorridoConverted.get(i) * PERCENT_40);
-                    tw = tw + (recorridoConverted.get(i) * PERCENT_50);
+                    tw = tw + (recorridoConverted.get(i) * PERCENT_60);
                     break;
-                case 3:
+                case 2:
                     // lc = lc + recorridoConverted.get(i);
                     lc = lc + (recorridoConverted.get(i) * PERCENT_15);
                     ic = ic + (recorridoConverted.get(i) * PERCENT_20);
                     tr = tr + (recorridoConverted.get(i) * PERCENT_50);
                     break;
-                case 4:
+                case 3:
                     pc = pc + recorridoConverted.get(i);
                     
                     break;
-                case 5:
+                case 4:
                     lc = lc + recorridoConverted.get(i);
                     break;
-                case 6:
+                case 5:
                     ief = ief + recorridoConverted.get(i);
                     break;
-                case 7:
+                case 6:
                     ief = ief + (recorridoConverted.get(i) * PERCENT_50);
                     tw = tw + recorridoConverted.get(i);
                     break;
-                case 8:
+                case 7:
                     ic = ic + (recorridoConverted.get(i) * PERCENT_40);
                     tr = tr + recorridoConverted.get(i);
                     break;
-                case 9:
+                case 8:
                     ic = ic + recorridoConverted.get(i);
                     break;
-                case 10:
+                case 9:
                     tw = tw + recorridoConverted.get(i);
                     break;
-                case 11:
+                case 10:
                     tr = tr + recorridoConverted.get(i);
                     break;
-                case 12:
+                case 11:
                     ief = ief + recorridoConverted.get(i);
                     break;
-                case 13:
+                case 12:
                     ic = ic + recorridoConverted.get(i);
                     break;
-                case 14:
+                case 13:
                     lc = lc + recorridoConverted.get(i);
                     break;
-                case 15:
+                case 14:
                     pc = pc + recorridoConverted.get(i);
                     break;
             }

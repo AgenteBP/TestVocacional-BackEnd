@@ -147,6 +147,7 @@ public class ResultadoService {
                 
                 // Asignar el puntajee para cada carrera
                 resultAndScoreDTO.getPuntajesDeResultados().setIdResultado(idResultado);
+                resultAndScoreDTO.getPuntajesDeResultados().setActive(true);
                 puntajesDeResultadosRepository.save(resultAndScoreDTO.getPuntajesDeResultados());
 
                 // Asignar el ID del resultado a cada recorrido

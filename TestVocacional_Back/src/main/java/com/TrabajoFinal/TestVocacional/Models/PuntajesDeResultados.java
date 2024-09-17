@@ -46,6 +46,9 @@ public class PuntajesDeResultados {
     @Column(nullable = false)
     private Double tr;
 
+    @Column(nullable = false)
+    private boolean active = true;
+
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinColumn(name = "idResultado", referencedColumnName = "id",insertable=false, 
 			updatable = false)
