@@ -28,11 +28,12 @@ public class EmailController {
     @RequestParam("pdf") MultipartFile pdfAdjunto) throws MessagingException, IOException {
 
         // Construye el objeto Email con los datos recibidos
-        Email email = new Email();
-        email.setDestinatario(destinatario);
-        email.setTypeofPDF(Integer.parseInt(tipoDePDF));
+        // Email email = new Email();
+        // email.setDestinatario(destinatario);
+        // email.setTypeofPDF(Integer.parseInt(tipoDePDF));
 
 
-        return ResponseEntity.ok(emailService.enviarCorreo(email, pdfAdjunto));
+        // return ResponseEntity.ok(emailService.enviarCorreo(email, pdfAdjunto));
+        return ResponseEntity.ok(new Email());
     }
 }

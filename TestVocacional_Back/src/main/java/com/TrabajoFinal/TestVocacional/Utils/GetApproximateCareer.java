@@ -187,20 +187,26 @@ public class GetApproximateCareer {
              }
         }
         else{
-            if(recorrido.get(size-2).getValorSeleccionado().equals("4/5 años") && recorrido.get(size-1).getValorSeleccionado().equals("8 am")){
-                result = determineLargestValue();
-                System.out.println("Resultado tiene despues de la funcion :" + result);
+            if(recorrido.get(size-2).getValorSeleccionado().equals("4 años")){
+                result = "Profesorado en Ciencias de la Computación";
             }
             else{
-                if(recorrido.get(size-1).getValorSeleccionado().equals("6 pm")){
-                    if(tw > tr){
-                        result = "Tecnicatura Universitaria en Web";
-                     }
-                     else{
-                        result = "Tecnicatura Universitaria en Redes de Computadoras";
-                     }
+                if(recorrido.get(size-2).getValorSeleccionado().equals("5 años") && recorrido.get(size-1).getValorSeleccionado().equals("8 am")){
+                    result = determineLargestValue();
+                    System.out.println("Resultado tiene despues de la funcion :" + result);
+                }
+                else{
+                    if(recorrido.get(size-1).getValorSeleccionado().equals("6 pm")){
+                        if(tw > tr){
+                            result = "Tecnicatura Universitaria en Web";
+                         }
+                         else{
+                            result = "Tecnicatura Universitaria en Redes de Computadoras";
+                         }
+                    }
                 }
             }
+            
         }
 
         resultAndScoreDTO.setResult(result);
