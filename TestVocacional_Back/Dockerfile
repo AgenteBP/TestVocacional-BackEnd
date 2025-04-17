@@ -1,5 +1,5 @@
 # Stage 1: Compilación con Maven y JDK 17
-FROM maven:3.8.6-openjdk-17 AS build
+FROM maven:3-openjdk-17 AS build
 WORKDIR /app
 
 # 1) Copiamos pom.xml para cachear dependencias
