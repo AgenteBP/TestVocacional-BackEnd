@@ -9,6 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.TrabajoFinal.TestVocacional.DTO.CareerMetricsDTO;
 import com.TrabajoFinal.TestVocacional.DTO.ResultAndScoreDTO;
 import com.TrabajoFinal.TestVocacional.DTO.ResultadoDTO;
 import com.TrabajoFinal.TestVocacional.Models.Recorrido;
@@ -118,6 +119,12 @@ public class ResultadoService {
         return resultadoRepository.getDataAllForSearch(opcion, valor, edadDesde, edadHasta, interes, PageRequest.of(page, quantityPerPage));
     }
 
+    ///Generador Excel Service
+    
+    public List<CareerMetricsDTO> generateExcel(){
+        return resultadoRepository.obtenerMetricas();
+    }
+
     public ResultadoDTO insert(ResultadoDTO resultadoDTO) {
         
         Resultados resultados2 = new Resultados();
@@ -126,38 +133,43 @@ public class ResultadoService {
         // String result = "";
         ResultAndScoreDTO resultAndScoreDTO = new ResultAndScoreDTO();
         try {
-            // if(resultadoDTO.getResultados().isInteres() == true){
-            //     resultados2.setCarreraObtenida(resultadoDTO.getResultados().getCarreraObtenida());
-            // }
-            // else{
-            //     resultados2.setCarreraObtenida(null);
-            // }
-
-            // Logica para obtener carrera aproximada
-            resultAndScoreDTO = GetApproximateCareer.getCarrer(resultadoDTO.getRecorrido());
-
-            //Funcion para determinar la carrera aproximada
-            
-            resultadoDTO.getResultados().setCarreraObtenida(resultAndScoreDTO.getResult());
-            resultadoDTO.getResultados().setActive(true);
-            resultados2 = this.resultadoRepository.save(resultadoDTO.getResultados());
-            System.out.println("el indicador de recorrido es "+ resultadoDTO.getResultados().getSaveTest());
-            if(resultadoDTO.getResultados().getSaveTest() == true){
-                idResultado = resultados2.getId();
-                
-                // Asignar el puntajee para cada carrera
-                resultAndScoreDTO.getPuntajesDeResultados().setIdResultado(idResultado);
-                resultAndScoreDTO.getPuntajesDeResultados().setActive(true);
-                puntajesDeResultadosRepository.save(resultAndScoreDTO.getPuntajesDeResultados());
-
-                // Asignar el ID del resultado a cada recorrido
-                for (Recorrido recorrido : resultadoDTO.getRecorrido()) {
-                    recorrido.setIdResultado(idResultado);
-                    recorrido.setActive(true); // Si es necesario activar el recorrido
-                    recorridosActualizados.add(recorrido);
+            ///Si viene de una consulta de una carrera
+            if(resultadoDTO.getResultados().getSaveTest() == false){
+                if(resultadoDTO.getResultados().isInteres() == false){
+                    resultadoDTO.getResultados().setCarreraObtenida(null);
                 }
-                recorridoRepository.saveAll(recorridosActualizados);
+                resultadoDTO.getResultados().setActive(true);
+                resultados2 = this.resultadoRepository.save(resultadoDTO.getResultados());
             }
+            ///Si viene de hacer el cuestionario
+            else{
+                // Logica para obtener carrera aproximada
+                resultAndScoreDTO = GetApproximateCareer.getCarrer(resultadoDTO.getRecorrido());
+
+                //Funcion para determinar la carrera aproximada
+                
+                resultadoDTO.getResultados().setCarreraObtenida(resultAndScoreDTO.getResult());
+                resultadoDTO.getResultados().setActive(true);
+                resultados2 = this.resultadoRepository.save(resultadoDTO.getResultados());
+                System.out.println("el indicador de recorrido es "+ resultadoDTO.getResultados().getSaveTest());
+                if(resultadoDTO.getResultados().getSaveTest() == true){
+                    idResultado = resultados2.getId();
+                    
+                    // Asignar el puntajee para cada carrera
+                    resultAndScoreDTO.getPuntajesDeResultados().setIdResultado(idResultado);
+                    resultAndScoreDTO.getPuntajesDeResultados().setActive(true);
+                    puntajesDeResultadosRepository.save(resultAndScoreDTO.getPuntajesDeResultados());
+
+                    // Asignar el ID del resultado a cada recorrido
+                    for (Recorrido recorrido : resultadoDTO.getRecorrido()) {
+                        recorrido.setIdResultado(idResultado);
+                        recorrido.setActive(true); // Si es necesario activar el recorrido
+                        recorridosActualizados.add(recorrido);
+                    }
+                    recorridoRepository.saveAll(recorridosActualizados);
+                }
+            }
+            
             
 
         } catch (DataIntegrityViolationException e) {

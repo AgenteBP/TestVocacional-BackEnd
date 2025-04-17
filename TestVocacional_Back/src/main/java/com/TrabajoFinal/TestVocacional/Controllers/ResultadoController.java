@@ -2,8 +2,10 @@ package com.TrabajoFinal.TestVocacional.Controllers;
 
 import java.util.List;
 import java.util.Map;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -14,15 +16,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.TrabajoFinal.TestVocacional.DTO.CareerMetricsDTO;
 import com.TrabajoFinal.TestVocacional.DTO.ResultadoDTO;
 import com.TrabajoFinal.TestVocacional.Services.ResultadoService;
 import com.TrabajoFinal.TestVocacional.Urls.UrlFront;
+import com.TrabajoFinal.TestVocacional.Utils.ExcelGenerator;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
 @RestController
-@CrossOrigin(origins = {UrlFront.urlLocal, UrlFront.urlNetlify})
+@CrossOrigin(origins = {UrlFront.urlLocal, UrlFront.urlNetlify}, exposedHeaders = "Content-Disposition")
 public class ResultadoController {
     private final int DEFAULT_PAGE_NUMBER = 0;
     private final int DEFAULT_QUANTITY_PER_PAGE = 10;
@@ -272,6 +277,43 @@ public class ResultadoController {
 
         return resultados;
     }
+
+    // Generador de excel
+    @GetMapping("/resultados/excel")
+    public void exportExcel(HttpServletResponse response) throws IOException {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=metricas_carreras.xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        List<CareerMetricsDTO> listMetric = resultadoService.generateExcel();
+        ExcelGenerator excelGenerator = new ExcelGenerator();
+        Workbook workbook = excelGenerator.generarExcel(listMetric);
+
+        workbook.write(response.getOutputStream());
+        workbook.close();
+    }
+
+    // @GetMapping("/resultados/excel")
+    // public ResponseEntity<InputStreamResource> exportExcel() throws IOException {
+    //     List<CareerMetricsDTO> listMetric = resultadoService.generateExcel();
+    //     ExcelGenerator excelGenerator = new ExcelGenerator();
+    //     Workbook workbook = excelGenerator.generarExcel(listMetric);
+        
+    //     ByteArrayOutputStream out = new ByteArrayOutputStream();
+    //     workbook.write(out);
+    //     workbook.close();
+        
+    //     ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+        
+    //     HttpHeaders headers = new HttpHeaders();
+    //     headers.add("Content-Disposition", "attachment; filename=metricas_carreras.xlsx");
+        
+    //     return ResponseEntity.ok()
+    //         .headers(headers)
+    //         .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+    //         .body(new InputStreamResource(in));
+    // }
 
 
     @PostMapping(value = "/resultados")

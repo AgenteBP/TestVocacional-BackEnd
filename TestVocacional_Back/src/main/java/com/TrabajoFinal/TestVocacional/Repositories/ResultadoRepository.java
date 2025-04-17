@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.TrabajoFinal.TestVocacional.DTO.CareerMetricsDTO;
 import com.TrabajoFinal.TestVocacional.Models.Resultados;
 
 import jakarta.transaction.Transactional;
@@ -226,6 +227,47 @@ public interface ResultadoRepository extends JpaRepository<Resultados, Integer>{
     Page<Object[]> getDataAllForSearch( @Param("opcion") String opcion, @Param("valor") String valor, @Param("edadDesde") Integer edadDesde, @Param("edadHasta") Integer edadHasta, @Param("interes") Boolean interes, Pageable pageable);
 
     Page<Resultados> findAllByActiveTrue(Pageable pageable);
+
+    ///Generar Excel 
+    @Query(nativeQuery = true, value = "SELECT " + 
+                "    u.email," + 
+                "    u.edad," + 
+                "    r.fecha," + 
+                "    u.school_in_san_luis," + 
+                "    r.carrera_obtenida," + 
+                "    MAX(CASE WHEN re.id_pregunta = 1 THEN re.valor_seleccionado END) AS pregunta_1," + 
+                "    MAX(CASE WHEN re.id_pregunta = 2 THEN re.valor_seleccionado END) AS pregunta_2," + 
+                "    MAX(CASE WHEN re.id_pregunta = 3 THEN re.valor_seleccionado END) AS pregunta_3," + 
+                "    MAX(CASE WHEN re.id_pregunta = 4 THEN re.valor_seleccionado END) AS pregunta_4," + 
+                "    MAX(CASE WHEN re.id_pregunta = 5 THEN re.valor_seleccionado END) AS pregunta_5," + 
+                "    MAX(CASE WHEN re.id_pregunta = 6 THEN re.valor_seleccionado END) AS pregunta_6," + 
+                "    MAX(CASE WHEN re.id_pregunta = 7 THEN re.valor_seleccionado END) AS pregunta_7," + 
+                "    MAX(CASE WHEN re.id_pregunta = 8 THEN re.valor_seleccionado END) AS pregunta_8," + 
+                "    MAX(CASE WHEN re.id_pregunta = 9 THEN re.valor_seleccionado END) AS pregunta_9," + 
+                "    MAX(CASE WHEN re.id_pregunta = 10 THEN re.valor_seleccionado END) AS pregunta_10," + 
+                "    MAX(CASE WHEN re.id_pregunta = 11 THEN re.valor_seleccionado END) AS pregunta_11," + 
+                "    MAX(CASE WHEN re.id_pregunta = 12 THEN re.valor_seleccionado END) AS pregunta_12," + 
+                "    MAX(CASE WHEN re.id_pregunta = 13 THEN re.valor_seleccionado END) AS pregunta_13," + 
+                "    MAX(CASE WHEN re.id_pregunta = 14 THEN re.valor_seleccionado END) AS pregunta_14," + 
+                "    MAX(CASE WHEN re.id_pregunta = 15 THEN re.valor_seleccionado END) AS pregunta_15," + 
+                "    MAX(CASE WHEN re.id_pregunta = 16 THEN re.valor_seleccionado END) AS pregunta_16," + 
+                "    MAX(p.lc)  AS lc," + 
+                "    MAX(p.pc)  AS pc," + 
+                "    MAX(p.ief) AS ief," + 
+                "    MAX(p.ic)  AS ic," + 
+                "    MAX(p.tw)  AS tw," + 
+                "    MAX(p.tr)  AS tr" + 
+                " FROM `usuarios` u" + 
+                " INNER JOIN `resultados` r ON u.id = r.id_usuario" + 
+                " INNER JOIN `recorrido` re ON re.id_resultado = r.id" + 
+                " INNER JOIN `puntajes_de_resultados` p ON p.id_resultado = r.id" + 
+                " GROUP BY " + 
+                "    u.email, " + 
+                "    u.edad, " + 
+                "    r.fecha, " + 
+                "    u.school_in_san_luis, " + 
+                "    r.carrera_obtenida")
+    List<CareerMetricsDTO> obtenerMetricas();
 
     @Modifying
     @Transactional
