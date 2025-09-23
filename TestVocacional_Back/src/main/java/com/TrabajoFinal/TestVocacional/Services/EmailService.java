@@ -56,22 +56,22 @@ public class EmailService {
         email.setAsunto("Información sobre la carrera obtenida");
         switch (email.getTypeofPDF()) {
             case 1:
-                linkCarerra = "https://fmn.unsl.edu.ar/oferta-academica/carreras-de-pregrado/tecnicatura-universitaria-en-web/";
+                linkCarerra = "https://carreras.unsl.edu.ar/carreras/tec-web";
                 break;
             case 2:
-                linkCarerra = "https://fmn.unsl.edu.ar/oferta-academica/carreras-de-pregrado/tecnicatura-universitaria-en-redes-de-computadoras/";
+                linkCarerra = "https://carreras.unsl.edu.ar/carreras/tec-redes-comp";
                 break;
             case 3:
-                linkCarerra = "https://fmn.unsl.edu.ar/oferta-academica/carreras-de-grado/profesorado-en-ciencias-de-la-computacion/";
+                linkCarerra = "https://carreras.unsl.edu.ar/carreras/prof-cs-comp";
                 break;
             case 4:
-                linkCarerra = "https://fmn.unsl.edu.ar/oferta-academica/carreras-de-grado/licenciatura-en-ciencias-de-la-computacion/";
+                linkCarerra = "https://carreras.unsl.edu.ar/carreras/lic-cs-comp";
                 break;
             case 5:
-                linkCarerra = "https://fmn.unsl.edu.ar/oferta-academica/carreras-de-grado/ingenieria-en-informatica/";
+                linkCarerra = "https://carreras.unsl.edu.ar/carreras/ing-informatica";
                 break;
             case 6:
-                linkCarerra = "https://fmn.unsl.edu.ar/oferta-academica/carreras-de-grado/ingenieria-en-computacion/";
+                linkCarerra = "https://carreras.unsl.edu.ar/carreras/ing-computacion";
                 break;
         }
         email.setCuerpo("La información necesaria para saber más sobre la carrera es: " + linkCarerra);
